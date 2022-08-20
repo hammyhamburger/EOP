@@ -57,3 +57,7 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.propertie
+
+# Personal Assets
+Assets/ERP*
+Assets/EckTechGames*
