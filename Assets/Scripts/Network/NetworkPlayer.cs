@@ -19,17 +19,14 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         {
             Local = this;
 
-            // Disable main camera
-            Camera.main.gameObject.SetActive(false);
-
             Debug.Log("Spawned local player");
         }
         else
         { 
-            Camera localCamera = GetComponent<Camera>();
+            Camera localCamera = GetComponentInChildren<Camera>();
             localCamera.enabled = false;
             
-            AudioListener audioListener = GetComponent<AudioListener>();
+            AudioListener audioListener = GetComponentInChildren<AudioListener>();
             audioListener.enabled = false;
 
             Debug.Log("Spawned remote player");

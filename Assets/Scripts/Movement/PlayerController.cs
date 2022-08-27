@@ -3,13 +3,9 @@ using Cinemachine;
 using Fusion;
 using UnityEngine.InputSystem;
 
-/* Note: animations are called via the controller for both the character and capsule using animator null checks
- */
-
 [RequireComponent(typeof(CharacterController))]
-[OrderBefore(typeof(NetworkTransform))]
-[DisallowMultipleComponent]
 [RequireComponent(typeof(PlayerInput))]
+[OrderBefore(typeof(NetworkTransform))]
 public class PlayerController : NetworkTransform
 {
     public float viewUpDownRotationSpeed = 50.0f;
@@ -22,14 +18,14 @@ public class PlayerController : NetworkTransform
     public float WalkSpeed = 1.5f;
 
     [Tooltip("Testing...")]
-    public float rotationSpeed= 1.5f;
+    public float rotationSpeed= 25f;
 
     [Tooltip("How fast the character turns to face movement direction")]
     [Range(0.0f, 0.3f)]
     public float RotationSmoothTime = 0.12f;
 
     [Tooltip("Acceleration and deceleration")]
-    public float SpeedChangeRate = 10.0f;
+    public float SpeedChangeRate = 30.0f;
 
     public AudioClip LandingAudioClip;
     public AudioClip[] FootstepAudioClips;
@@ -58,56 +54,18 @@ public class PlayerController : NetworkTransform
     [Tooltip("What layers the character uses as ground")]
     public LayerMask GroundLayers;
 
-    [Header("Cinemachine")]
-
-    [Tooltip("Virtual camera following CinemachineCameraTarget")]
-    public CinemachineVirtualCamera CinemachinePlayerCam;
-
-    [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
-    public GameObject CinemachineCameraTarget;
-
-    [Tooltip("How far in degrees can you move the camera up")]
-    public float TopClamp = 70.0f;
-
-    [Tooltip("How far in degrees can you move the camera down")]
-    public float BottomClamp = -30.0f;
-
-    [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
-    public float CameraAngleOverride = 0.0f;
-
-    [Tooltip("For locking the camera position on all axis")]
-    public bool LockCameraPosition = false;
-
-    [Tooltip("How fast the player can move the camera")]
-    public float cameraSensitivity = 1;
-
-    [Tooltip("How far the player can zoom out the camera")]
-    public float cameraMaxZoomDistance = 15;
-
     [Tooltip("Testing..")]
     public float braking = 10.0f;
 
-    // Cinemachine
-    private float _cinemachineTargetYaw;
-    private float _cinemachineTargetPitch;
-    private Vector2 _cineMachineDistance;
-    private Vector3 _cinemachineFollowOffset = new Vector3(0,3,0);
-    CinemachineComponentBase _componentBase;
-
-    // Player
+    // Player 
     private float _speed;
     private float _animationBlend;
     private float _targetRotation = 0.0f;
     private float _rotationVelocity;
     private float _verticalVelocity;
     private float _terminalVelocity = 53.0f;
-    private Vector2 _mousePosition;
-    private bool _isFollowingCamera;
 
     // Networking
-    // Movement input to send to server
-    private Vector2 moveInputVector = Vector2.zero;
-
     [Networked]
     [HideInInspector]
     public bool IsGrounded { get; set; }
@@ -128,7 +86,6 @@ public class PlayerController : NetworkTransform
     /// </summary>
     protected override Vector3 DefaultTeleportInterpolationAngularVelocity => new Vector3(0f, 0f, _rotationVelocity);
 
-
     // Timeout deltatime
     private float _fallTimeoutDelta;
 
@@ -148,32 +105,15 @@ public class PlayerController : NetworkTransform
     private Animator _animator;
     public CharacterController _controller{get; private set; }
     private CharacterInput _input;
-    private Camera _mainCamera;
 
     private const float _threshold = 0.01f;
 
     private bool _hasAnimator;
 
-    private bool IsCurrentDeviceMouse
-    {
-        get
-        {
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-            return _playerInput.currentControlScheme == "KeyboardMouse";
-#else
-            return false;
-#endif
-        }
-    }
-
     protected override void Awake()
     {
         base.Awake();
         CacheController();
-        _mainCamera = GetComponentInChildren<Camera>();
-        _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-        _componentBase = CinemachinePlayerCam.GetCinemachineComponent(CinemachineCore.Stage.Body);
-        _cinemachineFollowOffset = (_componentBase as CinemachineTransposer).m_FollowOffset;
 
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
@@ -334,43 +274,6 @@ public class PlayerController : NetworkTransform
 
       Velocity   = (transform.position - previousPos) * Runner.Simulation.Config.TickRate;
       IsGrounded = _controller.isGrounded;
-    }
-
-    private void CameraRotation()
-    {
-        // if there is an input and camera position is not fixed
-        if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
-        {
-            //Don't multiply mouse input by Time.deltaTime;
-            float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-
-            _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier * cameraSensitivity;
-            _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier * cameraSensitivity;
-        }
-
-
-        // clamp our rotations so our values are limited 360 degrees
-        _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
-
-        // Cinemachine will follow this target
-        CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
-            _cinemachineTargetYaw, 0.0f);
-    }
-
-    // private void CameraZoom()
-    // {
-    //     (_componentBase as CinemachineTransposer).m_FollowOffset = _cinemachineFollowOffset;
-
-    //     _cinemachineFollowOffset = new Vector3(_cinemachineFollowOffset.x, 
-    //         Mathf.Lerp(, cameraMaxZoomDistance ), 0);
-    // }
-
-    private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
-    {
-        if (lfAngle < -360f) lfAngle += 360f;
-        if (lfAngle > 360f) lfAngle -= 360f;
-        return Mathf.Clamp(lfAngle, lfMin, lfMax);
     }
 
     private void OnDrawGizmosSelected()
