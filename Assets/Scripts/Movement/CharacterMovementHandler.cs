@@ -29,7 +29,6 @@ public class CharacterMovementHandler : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
 
     public override void FixedUpdateNetwork()
@@ -50,11 +49,17 @@ public class CharacterMovementHandler : NetworkBehaviour
             moveDirection.Normalize();
 
             playerController.Move(moveDirection);
+
+            if (networkInputData.isJumpPressed)
+                playerController.Jump();
+            
+            CheckFallRespawn();
         }
     }
 
-    public void SetViewInputVector(Vector2 viewInput)
+    void CheckFallRespawn()
     {
-        this.viewInput = viewInput;
+        if (transform.position.y < -12)
+            transform.position = Utils.GetRandomSpawnPoint();
     }
 }

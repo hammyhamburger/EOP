@@ -52,11 +52,15 @@ public class CameraControls : MonoBehaviour
 
     void Awake()
     {
-        _charInput = GetComponentInChildren<CharacterInput>();
-        _playerInput = GetComponentInChildren<PlayerInput>();
         _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
         _componentBase = CinemachinePlayerCam.GetCinemachineComponent(CinemachineCore.Stage.Body);
         _cinemachineFollowDistance = (_componentBase as Cinemachine3rdPersonFollow).CameraDistance;
+    }
+
+    void Start()
+    {
+        _charInput = GetComponentInChildren<CharacterInput>();
+        _playerInput = GetComponentInChildren<PlayerInput>();
     }
 
     // Late update because of camera shenanigans
@@ -72,11 +76,12 @@ public class CameraControls : MonoBehaviour
         // if there is an input and camera position is not fixed
         if (_charInput.look.sqrMagnitude >= _threshold && !LockCameraPosition && _canRotate)
         {
+            // Constantly warping the mouse to make sure it doesnt leave the frame it appears
             Mouse.current.WarpCursorPosition(_mousePosition);
+
             _cinemachineTargetYaw += _charInput.look.x * cameraSensitivity;
             _cinemachineTargetPitch += _charInput.look.y * cameraSensitivity;
         }
-
 
         // clamp our rotations so our values are limited 360 degrees
         _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
@@ -108,31 +113,23 @@ public class CameraControls : MonoBehaviour
         return Mathf.Clamp(lfAngle, lfMin, lfMax);
     }
 
-    //There's definitely a better way..
+    //There must be a better way..
     private void RightClickCheck()
     {
-        _playerInput.actions["rightClick"].started += _ => recordCursor();
-        _playerInput.actions["rightClick"].performed += _ => lockCursor();
-        _playerInput.actions["rightClick"].canceled += _ => unlockCursor();
-
-        void recordCursor()
+        // If they start holding, hide cursor and record pos
+        _playerInput.actions["rightClick"].started += _ => 
         {
             _mousePosition = Mouse.current.position.ReadValue();
             Cursor.visible = false;
             _canRotate = true;
-        }
+        };
 
-        void lockCursor()
-        {
-            _canRotate = true;
-        }
-
-        void unlockCursor()
+        // If they stop holding, show cursor and warp it a last time to the recorded spot
+        _playerInput.actions["rightClick"].canceled += _ => 
         {
             Cursor.visible = true;
             Mouse.current.WarpCursorPosition(_mousePosition);
             _canRotate = false;
-        }
-
+        };
     }
 }

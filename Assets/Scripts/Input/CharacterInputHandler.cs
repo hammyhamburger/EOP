@@ -14,74 +14,79 @@ public class CharacterInputHandler : MonoBehaviour
 
     // Other components
     CharacterMovementHandler characterMovementHandler;
-    CharacterInput characterInput;
     CameraControls cameraControls;
+    private CharacterInput _charInput;
+    private PlayerInput _playerInput;
+
     private void Awake()
     {
         cameraControls = GetComponentInChildren<CameraControls>();
         characterMovementHandler = GetComponentInChildren<CharacterMovementHandler>();
-        characterInput = GetComponentInChildren<CharacterInput>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        _charInput = GetComponent<CharacterInput>();
+        _playerInput = GetComponent<PlayerInput>();
     }
 
     // Update is called once per frame
     void Update()
     {
         //Move input
-        moveInputVector.x = characterInput.move.x;
-        moveInputVector.y = characterInput.move.y;
-
-        isJumpButtonPressed = Input.GetButtonDown("Jump");
+        moveInputVector.x = _charInput.move.x;
+        moveInputVector.y = _charInput.move.y;
+        _playerInput.actions["jump"].performed += _ => {isJumpButtonPressed = true;};
     }
 
     public NetworkInputData GetNetworkInput()
     {
         NetworkInputData networkInputData = new NetworkInputData();
-        //View data
+        // View data
         networkInputData.aimVector = cameraControls.CinemachineCameraTarget.transform.forward;
-
-        //Move data
+        
+        // Move data
         networkInputData.movementInput = moveInputVector;
 
-        //Jump data
+        // Jump data
         networkInputData.isJumpPressed = isJumpButtonPressed;
+        
+        // Reset bool when jump has been performed
+        isJumpButtonPressed = false;
 
         return networkInputData;
     }
 
-    // Targeting, for later
-    private void Target()
-    {
-        //playerInput.actions["clickTarget"].performed += _ => TargetObject();
+    // Targeting, for later. not even sure if this belongs here..
+    // private void Target()
+    // {
+    //     //playerInput.actions["clickTarget"].performed += _ => TargetObject();
 
-        // Used to debug ray
-        // if (_input.clickTarget)
-        //     TargetObject();
+    //     // Used to debug ray
+    //     // if (_input.clickTarget)
+    //     //     TargetObject();
 
-        void TargetObject()
-        {
-            // TO DO - make entity stats a struct to send to server. health, mana, etc. need to live there.
+    //     void TargetObject()
+    //     {
+    //         // TO DO - make entity stats a struct to send to server. health, mana, etc. need to live there.
 
-            // _clickRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-            // if (Physics.Raycast(_clickRay, out RaycastHit hitData, layersToHit))
-            // {
-            //     _playerTarget = hitData.transform.gameObject;
+    //         // _clickRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+    //         // if (Physics.Raycast(_clickRay, out RaycastHit hitData, layersToHit))
+    //         // {
+    //         //     _playerTarget = hitData.transform.gameObject;
 
-            //     if (_playerTarget.tag == "Player")
-            //     {
-            //         targetEntityStats = _playerTarget.GetComponent<EntityStats>();
-            //         Debug.Log(targetEntityStats.health);
-            //     }
+    //         //     if (_playerTarget.tag == "Player")
+    //         //     {
+    //         //         targetEntityStats = _playerTarget.GetComponent<EntityStats>();
+    //         //         Debug.Log(targetEntityStats.health);
+    //         //     }
 
-            //     if (_playerTarget.tag == "Enemy")
-            //     {
+    //         //     if (_playerTarget.tag == "Enemy")
+    //         //     {
                     
-            //     }
-            // }
-        }   
-    }
+    //         //     }
+    //         // }
+    //     }   
+    // }
 }

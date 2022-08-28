@@ -1,5 +1,4 @@
 using UnityEngine;
-using Cinemachine;
 using Fusion;
 using UnityEngine.InputSystem;
 
@@ -33,7 +32,7 @@ public class PlayerController : NetworkTransform
 
     [Space(10)]
     [Tooltip("The height the player can jump")]
-    public float JumpHeight = 1.2f;
+    public float jumpImpulse = 15f;
 
     [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
     public float Gravity = -15.0f;
@@ -154,25 +153,6 @@ public class PlayerController : NetworkTransform
         _controller.enabled = true;
     }
 
-    private void Start()
-    {
-        // reset our timeouts on start
-        _fallTimeoutDelta = FallTimeout;
-        
-    }
-    
-    private void Update()
-    {
-        GroundedCheck();
-        JumpAndGravity();
-    }
-
-    private void LateUpdate()
-    {
-        // CameraZoom();
-        // CameraRotation();
-    }
-
     private void AssignAnimationIDs()
     {
         _animIDSpeed = Animator.StringToHash("Speed");
@@ -182,67 +162,10 @@ public class PlayerController : NetworkTransform
         _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
     }
 
-    private void GroundedCheck()
-    {
-        // set sphere position, with offset
-        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
-            transform.position.z);
-        Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
-            QueryTriggerInteraction.Ignore);
-
-        // update animator if using character
-        if (_hasAnimator)
-        {
-            _animator.SetBool(_animIDGrounded, Grounded);
-        }
-    }
-
-    private void JumpAndGravity()
-    {
-        if (Grounded)
-        {
-            // reset the fall timeout timer
-            _fallTimeoutDelta = FallTimeout;
-
-            // update animator if using character
-            if (_hasAnimator)
-            {
-                _animator.SetBool(_animIDJump, false);
-                _animator.SetBool(_animIDFreeFall, false);
-            }
-
-            // stop our velocity dropping infinitely when grounded
-            if (_verticalVelocity < 0.0f)
-            {
-                _verticalVelocity = -2f;
-            }
-
-            // Jump
-            if (_input.jump)
-            {
-                // the square root of H * -2 * G = how much velocity needed to reach desired height
-                _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-
-                // update animator if using character
-                if (_hasAnimator)
-                {
-                    _animator.SetBool(_animIDJump, true);
-                }
-            }
-        }
-        else
-        {
-            // if we are not grounded, do not jump
-            _input.jump = false;
-        }
-
-        // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
-        if (_verticalVelocity < _terminalVelocity)
-        {
-            _verticalVelocity += Gravity * Time.deltaTime;
-        }
-    }
-
+    /// <summary>
+    /// Basic implementation of a character controller's movement function based on an intended direction.
+    /// <param name="direction">Intended movement direction, subject to movement query, acceleration and max speed values.</param>
+    /// </summary>
     public virtual void Move(Vector3 direction) 
     { 
       var deltaTime    = Runner.DeltaTime;
@@ -274,6 +197,19 @@ public class PlayerController : NetworkTransform
 
       Velocity   = (transform.position - previousPos) * Runner.Simulation.Config.TickRate;
       IsGrounded = _controller.isGrounded;
+    }
+
+    /// <summary>
+    /// Basic implementation of a jump impulse (immediately integrates a vertical component to Velocity).
+    /// <param name="ignoreGrounded">Jump even if not in a grounded state.</param>
+    /// <param name="overrideImpulse">Optional field to override the jump impulse. If null, <see cref="jumpImpulse"/> is used.</param>
+    /// </summary>
+    public virtual void Jump(bool ignoreGrounded = false, float? overrideImpulse = null) {
+        if (IsGrounded || ignoreGrounded) {
+        var newVel = Velocity;
+        newVel.y += overrideImpulse ?? jumpImpulse;
+        Velocity =  newVel;
+        }
     }
 
     private void OnDrawGizmosSelected()
