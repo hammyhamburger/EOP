@@ -7,7 +7,7 @@
         {
             "name": "Unity Editor",
             "type": "unity",
-            "path": "/C:/Users/Michael/Documents/Unity Projects/TestInputs/Library/EditorInstance.json",
+            "path": "/C:/Users/Michael/Documents/Unity Projects/EOP/Library/EditorInstance.json",
             "request": "launch"
         },
         {
