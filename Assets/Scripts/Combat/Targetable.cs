@@ -12,6 +12,10 @@ public class Targetable : MonoBehaviour
     {
         _gameManager = FindObjectOfType<GameManager>();
         _networkObject = GetComponentInChildren<NetworkObject>();
+    }
+
+    private void Start()
+    {
         _gameManager.targetNetworkObjDict.Add(_networkObject.Id, _networkObject);
     }
 
