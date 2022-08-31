@@ -32,6 +32,7 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             Camera.main.gameObject.SetActive(false);
 
             Debug.Log("Spawned local player");
+            transform.name = $"{nickname}_{Object.Id}";
         }
         else
         { 
@@ -45,9 +46,8 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             audioListener.enabled = false;
 
             Debug.Log("Spawned remote player");
+            transform.name = $"{nickname}_{Object.Id}";
         }
-
-        transform.name = $"{nickname}_{Object.Id}";
     }
 
     public void PlayerLeft(PlayerRef player)

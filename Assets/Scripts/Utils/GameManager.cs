@@ -8,6 +8,13 @@ public class GameManager : MonoBehaviour
     public Dictionary<NetworkId, NetworkObject> targetNetworkObjDict = 
         new Dictionary<NetworkId, NetworkObject>();
 
+    NetworkObject defaultNo;
+    NetworkId defaultId;
+
+    void Awake()
+    {
+        targetNetworkObjDict.Add(defaultId, defaultNo);
+    }
     // Start is called before the first frame update
     void Start()
     {

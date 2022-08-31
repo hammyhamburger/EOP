@@ -68,12 +68,14 @@ public class CharacterInputHandler : MonoBehaviour
         {
             clickRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-            if (Physics.Raycast(clickRay, out RaycastHit hitData, layersToHit))
+            if (Physics.Raycast(clickRay, out RaycastHit hitData, layersToHit) && hitData.collider.GetComponent<Targetable>())
             {
-                if (hitData.collider.GetComponent<Targetable>() != null)
-                {
-                    targettedEntity = hitData.collider.GetComponent<NetworkObject>().Id;
-                }
+
+                targettedEntity = hitData.collider.GetComponent<NetworkObject>().Id;
+            }
+            else
+            {
+                targettedEntity = default;
             }
         }
     }

@@ -59,6 +59,11 @@ public class PlayerController : NetworkTransform
     [HideInInspector]
     public Vector3 Velocity { get; set; }
 
+    // Targeting
+    [Networked]
+    public NetworkObject playerTarget { get; set; }
+    public NetworkObject playerToT { get; set; }
+
     /// <summary>
     /// Sets the default teleport interpolation velocity to be the CC's current velocity.
     /// For more details on how this field is used, see <see cref="NetworkTransform.TeleportToPosition"/>.
@@ -81,9 +86,6 @@ public class PlayerController : NetworkTransform
     private int _animIDFreeFall;
     private int _animIDMotionSpeed;
 
-    // Targeting
-    [Networked]
-    public NetworkObject _playerTarget{get; set;}
     private EntityStats targetEntityStats;
 
     private Animator _animator;
@@ -186,7 +188,19 @@ public class PlayerController : NetworkTransform
 
     public void TargetEntity(NetworkId targettedEntity)
     {
-        _playerTarget = _gameManager.targetNetworkObjDict[targettedEntity];
+        playerTarget = _gameManager.targetNetworkObjDict[targettedEntity];
+        if (playerTarget != null) // Target is targettable
+        {
+            Debug.Log("Targetted " + playerTarget.transform.name + "!");
+            if (playerTarget.GetComponent<PlayerController>()) // Target is a player
+            {
+                if (playerTarget.GetComponent<PlayerController>().playerTarget != null) // Target has a target
+                {
+                    Debug.Log("Target of " + playerTarget.transform.name + " is " + playerTarget.GetComponent<PlayerController>().playerTarget.transform.name);
+                }
+            }
+        }
+            
     }
 
     /// <summary>

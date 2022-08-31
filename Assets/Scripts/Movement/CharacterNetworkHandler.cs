@@ -48,11 +48,8 @@ public class CharacterNetworkHandler : NetworkBehaviour
 
             if (networkInputData.isJumpPressed)
                 playerController.Jump();
-            
-            if (networkInputData.targettedEntity)
-            {
-                playerController.TargetEntity(networkInputData.targettedEntity);
-            }
+
+            playerController.TargetEntity(networkInputData.targettedEntity);
 
             CheckFallRespawn();
         }
