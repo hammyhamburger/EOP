@@ -90,7 +90,7 @@ public class PlayerController : NetworkTransform
 
     private Animator _animator;
     public CharacterController _controller{get; private set; }
-    private CharacterInput _input;
+    private PlayerInputHandler _input;
 
     private const float _threshold = 0.01f;
 
@@ -103,7 +103,7 @@ public class PlayerController : NetworkTransform
 
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
-        _input = GetComponent<CharacterInput>();
+        _input = GetComponent<PlayerInputHandler>();
         _gameManager = FindObjectOfType<GameManager>();
 
         AssignAnimationIDs();

@@ -15,8 +15,6 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     NetworkRunner networkRunner;
 
-    public GameObject[] targetList;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +24,6 @@ public class NetworkRunnerHandler : MonoBehaviour
         var clientTask = InitializeNetworkRunner(networkRunner, GameMode.AutoHostOrClient, NetAddress.Any(), SceneManager.GetActiveScene().buildIndex, null);
 
         Debug.Log($"Server NetworkRunner started.");
-
     }
 
     protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, NetAddress address, SceneRef scene, Action<NetworkRunner> initialized)

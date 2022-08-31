@@ -12,11 +12,6 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     [Networked(OnChanged = nameof(OnNicknameChanged))]
     public NetworkString<_16> nickname { get; set; }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public override void Spawned()
     {

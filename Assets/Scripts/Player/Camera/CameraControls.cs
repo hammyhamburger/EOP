@@ -47,7 +47,7 @@ public class CameraControls : MonoBehaviour
     CinemachineComponentBase _componentBase;
 
     // Other Components
-    private CharacterInput _charInput;
+    private PlayerInputHelper _playerInputHelper;
     private PlayerInput _playerInput;
 
     void Awake()
@@ -59,7 +59,7 @@ public class CameraControls : MonoBehaviour
 
     void Start()
     {
-        _charInput = GetComponentInChildren<CharacterInput>();
+        _playerInputHelper = GetComponentInChildren<PlayerInputHelper>();
         _playerInput = GetComponentInChildren<PlayerInput>();
     }
 
@@ -74,13 +74,13 @@ public class CameraControls : MonoBehaviour
     public void CameraRotation()
     {
         // if there is an input and camera position is not fixed
-        if (_charInput.look.sqrMagnitude >= _threshold && !LockCameraPosition && _canRotate)
+        if (_playerInputHelper.look.sqrMagnitude >= _threshold && !LockCameraPosition && _canRotate)
         {
             // Constantly warping the mouse to make sure it doesnt leave the frame it appears
             Mouse.current.WarpCursorPosition(_mousePosition);
 
-            _cinemachineTargetYaw += _charInput.look.x * cameraSensitivity;
-            _cinemachineTargetPitch += _charInput.look.y * cameraSensitivity;
+            _cinemachineTargetYaw += _playerInputHelper.look.x * cameraSensitivity;
+            _cinemachineTargetPitch += _playerInputHelper.look.y * cameraSensitivity;
         }
 
         // clamp our rotations so our values are limited 360 degrees
@@ -94,7 +94,7 @@ public class CameraControls : MonoBehaviour
 
     public void CameraZoom()
     {
-        float scroll = _charInput.scroll;
+        float scroll = _playerInputHelper.scroll;
         // Camera distance should not be greater than 15 or negative
         if (scroll != 0 && 
             scroll > 0 && _cinemachineCameraDistance > cameraMaxZoomDistance || 

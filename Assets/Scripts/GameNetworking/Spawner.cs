@@ -11,12 +11,7 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
     public NetworkEnemy pillEnemy;
 
     //Other compoents
-    CharacterInputHandler characterInputHandler;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
+    PlayerInputHandler playerInputHandler;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
@@ -32,13 +27,13 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        if (characterInputHandler == null && NetworkPlayer.Local != null)
+        if (playerInputHandler == null && NetworkPlayer.Local != null)
         {
-            characterInputHandler = NetworkPlayer.Local.GetComponent<CharacterInputHandler>();
+            playerInputHandler = NetworkPlayer.Local.GetComponent<PlayerInputHandler>();
         }
 
-        if (characterInputHandler != null)
-            input.Set(characterInputHandler.GetNetworkInput());
+        if (playerInputHandler != null)
+            input.Set(playerInputHandler.GetNetworkInput());
 
     }
 

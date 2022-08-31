@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CharacterInput : MonoBehaviour
+public class PlayerInputHelper : MonoBehaviour
 {
 	[Header("Character Input Values")]
 	public Vector2 move;

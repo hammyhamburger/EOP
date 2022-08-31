@@ -6,7 +6,7 @@ using Fusion;
 /*
 This class is designed for things the player does that the server needs to know about.
 */
-public class CharacterNetworkHandler : NetworkBehaviour
+public class PlayerNetworkHandler : NetworkBehaviour
 {
     // Other components
     PlayerController playerController;
@@ -14,17 +14,6 @@ public class CharacterNetworkHandler : NetworkBehaviour
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     public override void FixedUpdateNetwork()

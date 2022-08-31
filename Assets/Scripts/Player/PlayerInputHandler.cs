@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using System.Text;
 using Fusion;
 
-public class CharacterInputHandler : MonoBehaviour
+public class PlayerInputHandler : MonoBehaviour
 {
     // Input-related variables
     [Tooltip("What layers block the player's targeting ray")]
@@ -15,18 +15,18 @@ public class CharacterInputHandler : MonoBehaviour
     NetworkId targettedEntity;
 
     // Other components
-    CharacterNetworkHandler characterNetworkHandler;
+    PlayerInputHandler playerInputHandler;
     CameraControls cameraControls;
-    private CharacterInput _charInput;
+    private PlayerInputHelper _playerInputHelper;
     private PlayerInput _playerInput;
 
     private PlayerController _playerController;
     private void Awake()
     {
         cameraControls = GetComponentInChildren<CameraControls>();
-        characterNetworkHandler = GetComponentInChildren<CharacterNetworkHandler>();
+        playerInputHandler = GetComponentInChildren<PlayerInputHandler>();
         _playerController = GetComponentInChildren<PlayerController>();
-        _charInput = GetComponentInChildren<CharacterInput>();
+        _playerInputHelper = GetComponentInChildren<PlayerInputHelper>();
         _playerInput = GetComponentInChildren<PlayerInput>();
     }
 
@@ -34,8 +34,8 @@ public class CharacterInputHandler : MonoBehaviour
     void Update()
     {
         //Move input
-        moveInputVector.x = _charInput.move.x;
-        moveInputVector.y = _charInput.move.y;
+        moveInputVector.x = _playerInputHelper.move.x;
+        moveInputVector.y = _playerInputHelper.move.y;
 
         if (_playerInput.actions["jump"].triggered) {isJumpButtonPressed = true;};
 
