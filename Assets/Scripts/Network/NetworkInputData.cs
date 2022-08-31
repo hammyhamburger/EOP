@@ -12,5 +12,5 @@ public struct NetworkInputData : INetworkInput
     public Vector2 movementInput;
     public Vector3 aimVector;
     public NetworkBool isJumpPressed;
-    public int targettedEntity;
+    public NetworkId targettedEntity;
 }

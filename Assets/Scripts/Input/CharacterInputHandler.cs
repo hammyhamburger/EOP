@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Text;
+using Fusion;
 
 public class CharacterInputHandler : MonoBehaviour
 {
@@ -11,24 +12,22 @@ public class CharacterInputHandler : MonoBehaviour
     public LayerMask layersToHit;
     Vector2 moveInputVector = Vector2.zero;
     bool isJumpButtonPressed = false;
-    int targettedEntity = 0;
+    NetworkId targettedEntity;
 
     // Other components
     CharacterNetworkHandler characterNetworkHandler;
     CameraControls cameraControls;
     private CharacterInput _charInput;
     private PlayerInput _playerInput;
+
+    private PlayerController _playerController;
     private void Awake()
     {
         cameraControls = GetComponentInChildren<CameraControls>();
         characterNetworkHandler = GetComponentInChildren<CharacterNetworkHandler>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        _charInput = GetComponent<CharacterInput>();
-        _playerInput = GetComponent<PlayerInput>();
+        _playerController = GetComponentInChildren<PlayerController>();
+        _charInput = GetComponentInChildren<CharacterInput>();
+        _playerInput = GetComponentInChildren<PlayerInput>();
     }
 
     // Update is called once per frame
@@ -73,11 +72,7 @@ public class CharacterInputHandler : MonoBehaviour
             {
                 if (hitData.collider.GetComponent<Targetable>() != null)
                 {
-                    targettedEntity = hitData.collider.GetComponent<Targetable>().targetId;
-                }
-                else
-                {
-                    targettedEntity = 0;
+                    targettedEntity = hitData.collider.GetComponent<NetworkObject>().Id;
                 }
             }
         }

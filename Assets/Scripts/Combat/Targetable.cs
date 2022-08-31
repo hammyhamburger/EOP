@@ -6,13 +6,13 @@ using Fusion;
 public class Targetable : MonoBehaviour
 {
     private GameManager _gameManager;
-    public int targetId;
+    private NetworkObject _networkObject;
     
     private void Awake()
     {
         _gameManager = FindObjectOfType<GameManager>();
-        targetId = _gameManager.GetNextTargetId();
-        _gameManager.targetList.Add(this.gameObject);
+        _networkObject = GetComponentInChildren<NetworkObject>();
+        _gameManager.targetNetworkObjDict.Add(_networkObject.Id, _networkObject);
     }
 
     public enum EntityType {Player, Enemy}

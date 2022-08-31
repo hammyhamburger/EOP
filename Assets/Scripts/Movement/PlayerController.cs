@@ -82,7 +82,8 @@ public class PlayerController : NetworkTransform
     private int _animIDMotionSpeed;
 
     // Targeting
-    private GameObject _playerTarget;
+    [Networked]
+    public NetworkObject _playerTarget{get; set;}
     private EntityStats targetEntityStats;
 
     private Animator _animator;
@@ -183,10 +184,9 @@ public class PlayerController : NetworkTransform
       IsGrounded = _controller.isGrounded;
     }
 
-    public void TargetEntity(int targetId)
+    public void TargetEntity(NetworkId targettedEntity)
     {
-        _playerTarget = _gameManager.targetList[targetId-1];
-        Debug.Log("Targeted " + _playerTarget.transform.name + "!");
+        _playerTarget = _gameManager.NetworkObjDict[targettedEntity];
     }
 
     /// <summary>

@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
 
 public class GameManager : MonoBehaviour
 {
-    public int maxTargetID = 0;
-    public List<GameObject> targetList;
+    public Dictionary<NetworkId, NetworkObject> targetNetworkObjDict = 
+        new Dictionary<NetworkId, NetworkObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -17,11 +18,5 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
-    }
-
-    public int GetNextTargetId()
-    {
-        maxTargetID += 1;
-        return maxTargetID;
     }
 }
