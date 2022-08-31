@@ -234,14 +234,15 @@ GameObject:
   - component: {fileID: 1941614579866083786}
   - component: {fileID: 5481493143865981872}
   - component: {fileID: 1277281220749917050}
+  - component: {fileID: 8878800317110333300}
   - component: {fileID: 4031453654381050019}
   - component: {fileID: 8579020668901923329}
   - component: {fileID: 5271055255093096280}
-  - component: {fileID: 2219952110209487923}
   - component: {fileID: 1743994740773803489}
   - component: {fileID: 5681034304357944692}
   - component: {fileID: 9173347401834521276}
   - component: {fileID: 5430299292425376669}
+  - component: {fileID: 5342607572619087601}
   m_Layer: 8
   m_Name: NetworkPlayer PF
   m_TagString: Player
@@ -307,6 +308,19 @@ CharacterController:
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.93, z: 0}
+--- !u!114 &8878800317110333300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277281220749917040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a35d701ddc0c59340a16b37d0ba60655, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
 --- !u!114 &4031453654381050019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,9 +361,9 @@ MonoBehaviour:
     RawGuidValue: 8c304f93b07582b47b835854f7f85554
   NestedObjects: []
   NetworkedBehaviours:
+  - {fileID: 8878800317110333300}
   - {fileID: 4031453654381050019}
   - {fileID: 5271055255093096280}
-  - {fileID: 2219952110209487923}
   SimulationBehaviours: []
 --- !u!114 &5271055255093096280
 MonoBehaviour:
@@ -377,20 +391,16 @@ MonoBehaviour:
     RotBlendStart: 0.1
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
-  viewUpDownRotationSpeed: 50
   MoveSpeed: 4
   WalkSpeed: 0.2
   rotationSpeed: 25
-  RotationSmoothTime: 0.12
   SpeedChangeRate: 30
   LandingAudioClip: {fileID: 0}
   FootstepAudioClips: []
   FootstepAudioVolume: 0.5
   jumpImpulse: 8
   Gravity: -15
-  FallTimeout: 0.15
   Grounded: 1
-  GroundedOffset: -0.14
   GroundedRadius: 0.28
   GroundLayers:
     serializedVersion: 2
@@ -398,19 +408,6 @@ MonoBehaviour:
   braking: 10
   _IsGrounded: 0
   _Velocity: {x: 0, y: 0, z: 0}
---- !u!114 &2219952110209487923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1277281220749917040}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 081aacd15ed329b4b9dad84887881863, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
 --- !u!114 &1743994740773803489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,7 +442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layersToHit:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 777
 --- !u!114 &9173347401834521276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,6 +496,19 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &5342607572619087601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277281220749917040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 990e05fb40bd87048a33932e8c40f78f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entityType: 0
 --- !u!1 &1310733396060393260
 GameObject:
   m_ObjectHideFlags: 0
@@ -1559,7 +1569,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.9139345, y: 1}
+    m_SensorSize: {x: 1.8548057, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0

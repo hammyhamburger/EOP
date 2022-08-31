@@ -117,7 +117,7 @@ public class CameraControls : MonoBehaviour
     private void RightClickCheck()
     {
         // If they start holding, hide cursor and record pos
-        _playerInput.actions["rightClick"].started += _ => 
+        if (_playerInput.actions["rightClick"].triggered)
         {
             _mousePosition = Mouse.current.position.ReadValue();
             Cursor.visible = false;
@@ -125,7 +125,7 @@ public class CameraControls : MonoBehaviour
         };
 
         // If they stop holding, show cursor and warp it a last time to the recorded spot
-        _playerInput.actions["rightClick"].canceled += _ => 
+        if (_playerInput.actions["rightClick"].WasReleasedThisFrame())
         {
             Cursor.visible = true;
             Mouse.current.WarpCursorPosition(_mousePosition);

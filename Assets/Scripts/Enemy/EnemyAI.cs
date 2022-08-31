@@ -25,12 +25,13 @@ public class EnemyAI : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
     }
 
     private void Update()
     {
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+
         //Check for sight and attack range
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, Character);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, Character);

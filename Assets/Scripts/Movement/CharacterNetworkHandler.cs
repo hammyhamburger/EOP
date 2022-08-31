@@ -4,14 +4,10 @@ using UnityEngine;
 using Fusion;
 
 /*
-This class is designed for movements that need to be sent to the server.
-It's currently used for walking forward or rotating the player.
-It could be used for spells that displace the player.
+This class is designed for things the player does that the server needs to know about.
 */
-public class CharacterMovementHandler : NetworkBehaviour
+public class CharacterNetworkHandler : NetworkBehaviour
 {
-    Vector2 viewInput;
-
     // Other components
     PlayerController playerController;
 
@@ -53,6 +49,11 @@ public class CharacterMovementHandler : NetworkBehaviour
             if (networkInputData.isJumpPressed)
                 playerController.Jump();
             
+            if (networkInputData.targettedEntity != 0)
+            {
+                playerController.TargetEntity(networkInputData.targettedEntity);
+            }
+
             CheckFallRespawn();
         }
     }
@@ -60,6 +61,6 @@ public class CharacterMovementHandler : NetworkBehaviour
     void CheckFallRespawn()
     {
         if (transform.position.y < -12)
-            transform.position = Utils.GetRandomSpawnPoint();
+            transform.position = new Vector3(1, 0, 1);
     }
 }
