@@ -77,7 +77,7 @@ public class CharacterInputHandler : MonoBehaviour
                 }
                 else
                 {
-                    targettedEntity = -1;
+                    targettedEntity = 0;
                 }
             }
         }

@@ -185,7 +185,8 @@ public class PlayerController : NetworkTransform
 
     public void TargetEntity(int targetId)
     {
-        Debug.Log("Targeted " + _gameManager.targetList[targetId - 1].transform.name + "!");
+        _playerTarget = _gameManager.targetList[targetId-1];
+        Debug.Log("Targeted " + _playerTarget.transform.name + "!");
     }
 
     /// <summary>
