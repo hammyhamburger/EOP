@@ -186,7 +186,7 @@ public class PlayerController : NetworkTransform
 
     public void TargetEntity(NetworkId targettedEntity)
     {
-        _playerTarget = _gameManager.NetworkObjDict[targettedEntity];
+        _playerTarget = _gameManager.targetNetworkObjDict[targettedEntity];
     }
 
     /// <summary>
