@@ -1,13 +1,10 @@
 using UnityEngine;
 using Fusion;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(PlayerInput))]
 [OrderBefore(typeof(NetworkTransform))]
 public class PlayerController : NetworkTransform
 {
-    public float viewUpDownRotationSpeed = 50.0f;
 
     [Header("Player")]
     [Tooltip("Move speed of the character in m/s")]
@@ -18,10 +15,6 @@ public class PlayerController : NetworkTransform
 
     [Tooltip("Testing...")]
     public float rotationSpeed= 25f;
-
-    [Tooltip("How fast the character turns to face movement direction")]
-    [Range(0.0f, 0.3f)]
-    public float RotationSmoothTime = 0.12f;
 
     [Tooltip("Acceleration and deceleration")]
     public float SpeedChangeRate = 30.0f;
@@ -37,15 +30,9 @@ public class PlayerController : NetworkTransform
     [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
     public float Gravity = -15.0f;
 
-    [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
-    public float FallTimeout = 0.15f;
-
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
     public bool Grounded = true;
-
-    [Tooltip("Useful for rough ground")]
-    public float GroundedOffset = -0.14f;
 
     [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
     public float GroundedRadius = 0.28f;
@@ -56,13 +43,12 @@ public class PlayerController : NetworkTransform
     [Tooltip("Testing..")]
     public float braking = 10.0f;
 
+    // Game Manager
+    private GameManager _gameManager;
+
     // Player 
-    private float _speed;
     private float _animationBlend;
-    private float _targetRotation = 0.0f;
     private float _rotationVelocity;
-    private float _verticalVelocity;
-    private float _terminalVelocity = 53.0f;
 
     // Networking
     [Networked]
@@ -96,11 +82,9 @@ public class PlayerController : NetworkTransform
     private int _animIDMotionSpeed;
 
     // Targeting
-    private Ray _clickRay;
     private GameObject _playerTarget;
     private EntityStats targetEntityStats;
 
-    private PlayerInput _playerInput;
     private Animator _animator;
     public CharacterController _controller{get; private set; }
     private CharacterInput _input;
@@ -117,7 +101,7 @@ public class PlayerController : NetworkTransform
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
         _input = GetComponent<CharacterInput>();
-        _playerInput = GetComponent<PlayerInput>();
+        _gameManager = FindObjectOfType<GameManager>();
 
         AssignAnimationIDs();
     }
@@ -137,7 +121,7 @@ public class PlayerController : NetworkTransform
         {
             _controller = GetComponent<CharacterController>();
 
-        Assert.Check(_controller != null, $"An object with {nameof(NetworkCharacterControllerPrototype)} must also have a {nameof(CharacterController)} component.");
+        Assert.Check(_controller != null, $"An object with {nameof(CharacterController)} must also have a {nameof(CharacterController)} component.");
         }
     }
 
@@ -199,6 +183,11 @@ public class PlayerController : NetworkTransform
       IsGrounded = _controller.isGrounded;
     }
 
+    public void TargetEntity(int targetId)
+    {
+        Debug.Log("Targeted " + _gameManager.targetList[targetId - 1].transform.name + "!");
+    }
+
     /// <summary>
     /// Basic implementation of a jump impulse (immediately integrates a vertical component to Velocity).
     /// <param name="ignoreGrounded">Jump even if not in a grounded state.</param>
@@ -210,20 +199,6 @@ public class PlayerController : NetworkTransform
         newVel.y += overrideImpulse ?? jumpImpulse;
         Velocity =  newVel;
         }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
-        Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
-
-        if (Grounded) Gizmos.color = transparentGreen;
-        else Gizmos.color = transparentRed;
-
-        // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
-        Gizmos.DrawSphere(
-            new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
-            GroundedRadius);
     }
 
     private void OnFootstep(AnimationEvent animationEvent)
@@ -244,9 +219,5 @@ public class PlayerController : NetworkTransform
         {
             AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
         }
-    }
-    public void Rotate(float rotationY)
-    {
-        transform.Rotate(0, rotationY * Runner.DeltaTime * rotationSpeed, 0);
     }
 }

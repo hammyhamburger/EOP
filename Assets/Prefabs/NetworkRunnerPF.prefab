@@ -59,3 +59,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 4031453654381050019, guid: 8c304f93b07582b47b835854f7f85554,
     type: 3}
+  pillEnemy: {fileID: 6168428576923925398, guid: ea186dfeae31c4e499e1e9149e03e1ef,
+    type: 3}

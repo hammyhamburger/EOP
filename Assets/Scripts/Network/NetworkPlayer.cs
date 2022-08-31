@@ -24,6 +24,9 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         {
             Local = this;
 
+            Canvas playerNamePlate = GetComponentInChildren<Canvas>();
+            playerNamePlate.enabled = false;
+
             RPC_SetNickname(PlayerPrefs.GetString("PlayerNickname"));
 
             Camera.main.gameObject.SetActive(false);
@@ -43,6 +46,8 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
             Debug.Log("Spawned remote player");
         }
+
+        transform.name = $"{nickname}_{Object.Id}";
     }
 
     public void PlayerLeft(PlayerRef player)

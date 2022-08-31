@@ -4,10 +4,11 @@ using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
 using System;
-
+using Cinemachine;
 public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     public NetworkPlayer playerPrefab;
+    public NetworkEnemy pillEnemy;
 
     //Other compoents
     CharacterInputHandler characterInputHandler;
@@ -15,7 +16,6 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        transform.name = transform.name.Replace("(clone)","").Trim();
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -23,7 +23,9 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer)
         {
             Debug.Log("OnPlayerJoined we are server. Spawning player");
-            runner.Spawn(playerPrefab, Utils.GetRandomSpawnPoint(), Quaternion.identity, player);
+
+            // Spawn point is doubled for some reason, also cinemachine is taking over the rotation.
+            runner.Spawn(playerPrefab, new Vector3(UnityEngine.Random.Range(-10,10), 0, 10), /*Quaternion.LookRotation(new Vector3(-0.49f, -0.16f, -0.86f))*/ Quaternion.Euler(-180, 20, 180), player);
         }
         else Debug.Log("OnPlayerJoined");
     }
@@ -52,6 +54,12 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
     public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) { }
-    public void OnSceneLoadDone(NetworkRunner runner) { }
-    public void OnSceneLoadStart(NetworkRunner runner) { }
+    public void OnSceneLoadDone(NetworkRunner runner) 
+    {
+        runner.Spawn(pillEnemy, new Vector3(0, 1.4f, 0), Quaternion.identity);
+    }
+    public void OnSceneLoadStart(NetworkRunner runner) 
+    {
+        //runner.Spawn(pillEnemy, new Vector3(0, 1.4f, 0), Quaternion.identity);
+    }
 }

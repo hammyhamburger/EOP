@@ -15,6 +15,8 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     NetworkRunner networkRunner;
 
+    public GameObject[] targetList;
+
     // Start is called before the first frame update
     void Start()
     {
