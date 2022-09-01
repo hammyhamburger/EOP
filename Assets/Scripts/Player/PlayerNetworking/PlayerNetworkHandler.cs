@@ -33,7 +33,10 @@ public class PlayerNetworkHandler : NetworkBehaviour
             Vector3 moveDirection = transform.forward * networkInputData.movementInput.y + transform.right * networkInputData.movementInput.x;
             moveDirection.Normalize();
 
-            playerController.Move(moveDirection);
+            if (networkInputData.isWalkHeld)
+                playerController.Move(moveDirection, 1.5f); // Walking
+
+            playerController.Move(moveDirection, 4.5f); // Running
 
             if (networkInputData.isJumpPressed)
                 playerController.Jump();

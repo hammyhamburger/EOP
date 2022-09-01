@@ -62,6 +62,8 @@ public class PlayerController : NetworkTransform
     // Targeting
     [Networked]
     public NetworkObject playerTarget { get; set; }
+
+    [Networked]
     public NetworkObject playerToT { get; set; }
 
     /// <summary>
@@ -153,7 +155,7 @@ public class PlayerController : NetworkTransform
     /// Basic implementation of a character controller's movement function based on an intended direction.
     /// <param name="direction">Intended movement direction, subject to movement query, acceleration and max speed values.</param>
     /// </summary>
-    public virtual void Move(Vector3 direction) 
+    public virtual void Move(Vector3 direction, float speed) 
     { 
       var deltaTime    = Runner.DeltaTime;
       var previousPos  = transform.position;
@@ -174,7 +176,7 @@ public class PlayerController : NetworkTransform
       if (direction == default) {
       horizontalVel = Vector3.Lerp(horizontalVel, default, braking * deltaTime);
       } else {
-      horizontalVel = Vector3.ClampMagnitude(horizontalVel + direction * SpeedChangeRate * deltaTime, MoveSpeed);
+      horizontalVel = Vector3.ClampMagnitude(horizontalVel + direction * SpeedChangeRate * deltaTime, speed);
       }
 
       moveVelocity.x = horizontalVel.x;
@@ -191,15 +193,16 @@ public class PlayerController : NetworkTransform
         playerTarget = _gameManager.targetNetworkObjDict[targettedEntity];
         if (playerTarget != null) // Target is targettable
         {
-            Debug.Log("Targetted " + playerTarget.transform.name + "!");
             if (playerTarget.GetComponent<PlayerController>()) // Target is a player
             {
                 if (playerTarget.GetComponent<PlayerController>().playerTarget != null) // Target has a target
                 {
-                    Debug.Log("Target of " + playerTarget.transform.name + " is " + playerTarget.GetComponent<PlayerController>().playerTarget.transform.name);
+                    playerToT = playerTarget.GetComponent<PlayerController>().playerTarget;
                 }
             }
+            else playerToT = null; // Null out old target of target
         }
+        else playerToT = null; // No target means no target of target
             
     }
 

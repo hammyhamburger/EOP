@@ -12,6 +12,7 @@ public class PlayerInputHandler : MonoBehaviour
     public LayerMask layersToHit;
     Vector2 moveInputVector = Vector2.zero;
     bool isJumpButtonPressed = false;
+    bool isWalkheld = false;
     NetworkId targettedEntity;
 
     // Other components
@@ -38,6 +39,7 @@ public class PlayerInputHandler : MonoBehaviour
         moveInputVector.y = _playerInputHelper.move.y;
 
         if (_playerInput.actions["jump"].triggered) {isJumpButtonPressed = true;};
+        if (_playerInput.actions["walk"].IsPressed()) {isWalkheld = true; Debug.Log("walking..");};
 
         ClickTarget();
     }
@@ -55,6 +57,9 @@ public class PlayerInputHandler : MonoBehaviour
         networkInputData.isJumpPressed = isJumpButtonPressed;
         // Reset bool when jump has been performed
         isJumpButtonPressed = false;
+
+        networkInputData.isWalkHeld = isWalkheld;
+        isWalkheld = false;
 
         networkInputData.targettedEntity = targettedEntity;
         
