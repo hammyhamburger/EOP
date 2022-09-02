@@ -95,8 +95,8 @@ GameObject:
   - component: {fileID: 5627746844860383481}
   - component: {fileID: 5627746844860383486}
   - component: {fileID: 6168428576923925398}
-  - component: {fileID: 5627746844860383487}
   - component: {fileID: 6166130689764771720}
+  - component: {fileID: 2796647519330058593}
   m_Layer: 0
   m_Name: PillEnemy
   m_TagString: Untagged
@@ -184,19 +184,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
---- !u!114 &5627746844860383487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5627746844860383484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 990e05fb40bd87048a33932e8c40f78f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entityType: 1
 --- !u!136 &6166130689764771720
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -211,3 +198,20 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2796647519330058593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5627746844860383484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95af319b20e00084fafc2d87e6d6a94d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entityType: 1
+  moveSpeed: 0
+  Health: 0
+  Mana: 0
+  isPlayer: 0

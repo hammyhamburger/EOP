@@ -34,6 +34,9 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             Camera localCamera = GetComponentInChildren<Camera>();
             localCamera.enabled = false;
 
+            CinemachineBrain cCamBrain = GetComponentInChildren<CinemachineBrain>();
+            cCamBrain.enabled = false;
+
             CinemachineVirtualCamera cCam = GetComponentInChildren<CinemachineVirtualCamera>();
             cCam.enabled = false;
             

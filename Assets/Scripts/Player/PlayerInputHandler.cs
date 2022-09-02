@@ -16,16 +16,14 @@ public class PlayerInputHandler : MonoBehaviour
     NetworkId targettedEntity;
 
     // Other components
-    PlayerInputHandler playerInputHandler;
-    CameraControls cameraControls;
+    private CameraControls _cameraControls;
     private PlayerInputHelper _playerInputHelper;
     private PlayerInput _playerInput;
 
     private PlayerController _playerController;
     private void Awake()
     {
-        cameraControls = GetComponentInChildren<CameraControls>();
-        playerInputHandler = GetComponentInChildren<PlayerInputHandler>();
+        _cameraControls = GetComponentInChildren<CameraControls>();
         _playerController = GetComponentInChildren<PlayerController>();
         _playerInputHelper = GetComponentInChildren<PlayerInputHelper>();
         _playerInput = GetComponentInChildren<PlayerInput>();
@@ -48,7 +46,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         NetworkInputData networkInputData = new NetworkInputData();
         // View data
-        networkInputData.aimVector = cameraControls.CinemachineCameraTarget.transform.forward;
+        networkInputData.aimVector = _cameraControls.CinemachineCameraTarget.transform.forward;
         
         // Move data
         networkInputData.movementInput = moveInputVector;
@@ -73,9 +71,8 @@ public class PlayerInputHandler : MonoBehaviour
         {
             clickRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-            if (Physics.Raycast(clickRay, out RaycastHit hitData, layersToHit) && hitData.collider.GetComponent<Targetable>())
+            if (Physics.Raycast(clickRay, out RaycastHit hitData, layersToHit) && hitData.collider.GetComponent<EntityStats>())
             {
-
                 targettedEntity = hitData.collider.GetComponent<NetworkObject>().Id;
             }
             else

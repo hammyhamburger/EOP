@@ -9,11 +9,15 @@ This class is designed for things the player does that the server needs to know 
 public class PlayerNetworkHandler : NetworkBehaviour
 {
     // Other components
-    PlayerController playerController;
-
+    private PlayerController _playerController;
+    private EntityStats _targetEntityStats;
+    private Camera _camera;
+    
     private void Awake()
     {
-        playerController = GetComponent<PlayerController>();
+        _playerController = GetComponent<PlayerController>();
+        _targetEntityStats = GetComponent<EntityStats>();
+        _camera = GetComponentInChildren<Camera>();
     }
 
     public override void FixedUpdateNetwork()
@@ -21,7 +25,7 @@ public class PlayerNetworkHandler : NetworkBehaviour
         //Get the input from the network
         if (GetInput(out NetworkInputData networkInputData))
         {
-            // Rotate according to where the player is aiming w/ right click
+            // Rotate according to where the camera is aiming
             transform.forward = networkInputData.aimVector;
 
             // Don't rotate the player on any other axis but Y
@@ -33,15 +37,12 @@ public class PlayerNetworkHandler : NetworkBehaviour
             Vector3 moveDirection = transform.forward * networkInputData.movementInput.y + transform.right * networkInputData.movementInput.x;
             moveDirection.Normalize();
 
-            if (networkInputData.isWalkHeld)
-                playerController.Move(moveDirection, 1.5f); // Walking
-
-            playerController.Move(moveDirection, 4.5f); // Running
+            _playerController.Move(moveDirection, networkInputData.isWalkHeld); // If true then walking
 
             if (networkInputData.isJumpPressed)
-                playerController.Jump();
+                _playerController.Jump();
 
-            playerController.TargetEntity(networkInputData.targettedEntity);
+            _targetEntityStats.TargetEntity(networkInputData.targettedEntity);
 
             CheckFallRespawn();
         }
