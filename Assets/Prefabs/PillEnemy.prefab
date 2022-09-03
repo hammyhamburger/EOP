@@ -170,6 +170,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 5627746844860383481}
   - {fileID: 6168428576923925398}
+  - {fileID: 2796647519330058593}
   SimulationBehaviours: []
 --- !u!114 &6168428576923925398
 MonoBehaviour:
@@ -210,8 +211,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95af319b20e00084fafc2d87e6d6a94d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   entityType: 1
-  moveSpeed: 0
+  MoveSpeed: 0
   Health: 0
   Mana: 0
-  isPlayer: 0
+  _Target: {fileID: 0}
+  _TargetOfTarget: {fileID: 0}

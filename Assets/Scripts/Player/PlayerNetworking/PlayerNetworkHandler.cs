@@ -26,7 +26,7 @@ public class PlayerNetworkHandler : NetworkBehaviour
         if (GetInput(out NetworkInputData networkInputData))
         {
             // Rotate according to where the camera is aiming
-            transform.forward = networkInputData.aimVector;
+            transform.forward = networkInputData.AimVector;
 
             // Don't rotate the player on any other axis but Y
             Quaternion rotation = transform.rotation;
@@ -34,15 +34,15 @@ public class PlayerNetworkHandler : NetworkBehaviour
             transform.rotation = rotation;
 
             //Move
-            Vector3 moveDirection = transform.forward * networkInputData.movementInput.y + transform.right * networkInputData.movementInput.x;
+            Vector3 moveDirection = transform.forward * networkInputData.MovementInput.y + transform.right * networkInputData.MovementInput.x;
             moveDirection.Normalize();
 
-            _playerController.Move(moveDirection, networkInputData.isWalkHeld); // If true then walking
+            _playerController.Move(moveDirection, networkInputData.IsWalkHeld); // If true then walking
 
-            if (networkInputData.isJumpPressed)
+            if (networkInputData.IsJumpPressed)
                 _playerController.Jump();
 
-            _targetEntityStats.TargetEntity(networkInputData.targettedEntity);
+            SetTarget(networkInputData.TargetId);
 
             CheckFallRespawn();
         }
@@ -52,5 +52,18 @@ public class PlayerNetworkHandler : NetworkBehaviour
     {
         if (transform.position.y < -12)
             transform.position = new Vector3(1, 0, 1);
+    }
+
+    void SetTarget(NetworkId targetId)
+    {
+        foreach (NetworkObject TargetNo in FindObjectsOfType<NetworkObject>())
+        {
+            if (TargetNo.Id == targetId)
+                _targetEntityStats.Target = TargetNo;
+
+        }
+        if (!targetId)
+            _targetEntityStats.Target = default;
+
     }
 }

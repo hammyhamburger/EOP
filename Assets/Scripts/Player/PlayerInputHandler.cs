@@ -10,10 +10,12 @@ public class PlayerInputHandler : MonoBehaviour
     // Input-related variables
     [Tooltip("What layers block the player's targeting ray")]
     public LayerMask layersToHit;
-    Vector2 moveInputVector = Vector2.zero;
-    bool isJumpButtonPressed = false;
-    bool isWalkheld = false;
-    NetworkId targettedEntity;
+    private bool _isJumpButtonPressed = false;
+    private bool _isWalkheld = false;
+    private Vector2 moveInputVector = Vector2.zero;
+    private NetworkId _targettedEntityId;
+    private EntityStats _entityStats;
+
 
     // Other components
     private CameraControls _cameraControls;
@@ -23,6 +25,7 @@ public class PlayerInputHandler : MonoBehaviour
     private PlayerController _playerController;
     private void Awake()
     {
+        _entityStats = GetComponentInChildren<EntityStats>();
         _cameraControls = GetComponentInChildren<CameraControls>();
         _playerController = GetComponentInChildren<PlayerController>();
         _playerInputHelper = GetComponentInChildren<PlayerInputHelper>();
@@ -32,13 +35,17 @@ public class PlayerInputHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Move input
+        // Move input
         moveInputVector.x = _playerInputHelper.move.x;
         moveInputVector.y = _playerInputHelper.move.y;
 
-        if (_playerInput.actions["jump"].triggered) {isJumpButtonPressed = true;};
-        if (_playerInput.actions["walk"].IsPressed()) {isWalkheld = true; Debug.Log("walking..");};
+        // Jump input
+        if (_playerInput.actions["jump"].triggered) {_isJumpButtonPressed = true;};
 
+        // Walk input
+        if (_playerInput.actions["walk"].IsPressed()) {_isWalkheld = true;};
+
+        // Targetting input
         ClickTarget();
     }
 
@@ -46,20 +53,23 @@ public class PlayerInputHandler : MonoBehaviour
     {
         NetworkInputData networkInputData = new NetworkInputData();
         // View data
-        networkInputData.aimVector = _cameraControls.CinemachineCameraTarget.transform.forward;
+        networkInputData.AimVector = _cameraControls.CinemachineCameraTarget.transform.forward;
         
         // Move data
-        networkInputData.movementInput = moveInputVector;
+        networkInputData.MovementInput = moveInputVector;
 
         // Jump data
-        networkInputData.isJumpPressed = isJumpButtonPressed;
+        networkInputData.IsJumpPressed = _isJumpButtonPressed;
         // Reset bool when jump has been performed
-        isJumpButtonPressed = false;
+        _isJumpButtonPressed = false;
 
-        networkInputData.isWalkHeld = isWalkheld;
-        isWalkheld = false;
+        // Walk data
+        networkInputData.IsWalkHeld = _isWalkheld;
+        // Reset bool when walk has stopped
+        _isWalkheld = false;
 
-        networkInputData.targettedEntity = targettedEntity;
+        // Target data
+        networkInputData.TargetId = _targettedEntityId;
         
         return networkInputData;
     }
@@ -73,11 +83,11 @@ public class PlayerInputHandler : MonoBehaviour
 
             if (Physics.Raycast(clickRay, out RaycastHit hitData, layersToHit) && hitData.collider.GetComponent<EntityStats>())
             {
-                targettedEntity = hitData.collider.GetComponent<NetworkObject>().Id;
+                _targettedEntityId = hitData.collider.GetComponent<NetworkObject>().Id;
             }
             else
             {
-                targettedEntity = default;
+                _targettedEntityId = default;
             }
         }
     }

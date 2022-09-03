@@ -18,10 +18,7 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (Object.HasInputAuthority)
         {
             Local = this;
-
-            Canvas playerNamePlate = GetComponentInChildren<Canvas>();
-            playerNamePlate.enabled = false;
-
+            
             RPC_SetNickname(PlayerPrefs.GetString("PlayerNickname"));
 
             Camera.main.gameObject.SetActive(false);
@@ -31,6 +28,7 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         }
         else
         { 
+
             Camera localCamera = GetComponentInChildren<Camera>();
             localCamera.enabled = false;
 
@@ -53,7 +51,6 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (player == Object.InputAuthority)
             Runner.Despawn(Object);
     }
-
     static void OnNicknameChanged(Changed<NetworkPlayer> changed)
     {
         changed.Behaviour.OnNicknameChanged();
